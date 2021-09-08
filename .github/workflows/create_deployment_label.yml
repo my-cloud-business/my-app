@@ -27,7 +27,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const scriptPath = require('path').resolve('./.github/workflows/scripts/deploymentLabel.js');
+            const scriptPath = require('path').resolve('./.github/workflows/scripts/deploymentLabelbente.js');
             const DeploymentLabel = require(scriptPath);
 
             console.log("starting to understand deploy labels")
