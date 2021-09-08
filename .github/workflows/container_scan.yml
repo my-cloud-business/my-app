@@ -37,8 +37,6 @@ jobs:
                 ...context.repo,
                 ref: context.payload.workflow_run.head_sha
             }).then(status => {
-                console.log("status = " + JSON.stringify(status))
-                console.log("status.data = " + JSON.stringify(status.data) )
                 if (status.data.statuses) {
                     return status.data.statuses.filter(status => {
                         return status.context === 'Update container status' && status.state === 'success';
