@@ -24,7 +24,7 @@ module.exports = class DeploymentLabel {
       if (!containers || containers.length === 0) {
         console.log("saw no containers");
         await this.postNoContainerStatus();
-      } else if (containers.length === 2) {
+      } else if (containers.length === 1) {
         // Extract the containers, post a message to the user acknowledging the request and provide outputs for action steps
         await this.postDeploymentComment(label, containers)
   
@@ -32,8 +32,8 @@ module.exports = class DeploymentLabel {
 
         // Expose the container details
         containers.forEach(container => {
-          core.setOutput(`${container.type}_container_image`, container.image);
-          core.setOutput(`${container.type}_container_version`, container.version);
+          core.setOutput(`container_image`, container.image);
+          core.setOutput(`container_version`, container.version);
         });
   
         // Remove the label

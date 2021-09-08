@@ -54,10 +54,8 @@ jobs:
         uses: actions/github-script@v3
         env:
           container_registry: ghcr.io
-          app_container_image: ${{ steps.acknowledge_label.outputs.app_container_image }}
-          app_container_version: ${{ steps.acknowledge_label.outputs.app_container_version }}
-          db_container_image: ${{ steps.acknowledge_label.outputs.database_container_image }}
-          db_container_version: ${{ steps.acknowledge_label.outputs.database_container_version }}
+          app_container_image: ${{ steps.acknowledge_label.outputs.container_image }}
+          app_container_version: ${{ steps.acknowledge_label.outputs.container_version }}
         with:
           github-token: ${{ steps.temp_token.outputs.token }}
           script: |
