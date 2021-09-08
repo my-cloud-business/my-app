@@ -91,13 +91,9 @@ module.exports = class DeploymentLabel {
       const containers = [];
   
       statuses.forEach(status => {
-        const nameParts = status.context.split(' - ')
-          , containerType = nameParts[1].toLowerCase()
-          , containerParts = status.description.split(':')
-          ;
+        const containerParts = status.description.split(':');
               
-        containers.push({
-          type: containerType,
+        containers.push({          
           image: containerParts[0],
           version: containerParts[1]
         });
@@ -117,7 +113,7 @@ module.exports = class DeploymentLabel {
         ;
       
       containers.forEach(container => {
-        containerTableEntries.push(`| ${container.type} | _${container.image}_ | __${container.version}__ |`);
+        containerTableEntries.push(`| _${container.image}_ | __${container.version}__ |`);
       });
       
       const commentBody = `
