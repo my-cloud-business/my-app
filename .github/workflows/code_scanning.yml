@@ -42,7 +42,7 @@ jobs:
       - name: Custom Build Step
         id: maven_build
         env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_PAT }
+          GITHUB_TOKEN: ${{ secrets.PACKAGES_PAT }}
         run: |
           mvn compile -B  
         shell: bash
