@@ -18,8 +18,7 @@ module.exports.validateEnvironment = function(command) {
   
   
   module.exports.dispatch = async(payload) => {
-    const environmentName = validateParameter(payload, 'environmentName'),
-      cloudProvider = validateParameter(payload, 'cloudProvider'),
+    const environmentName = validateParameter(payload, 'environmentName'),      
       context = validateParameter(payload, 'context'),
       github = validateParameter(payload, 'github'),
       containerRegistry = validateParameter(payload, 'containerRegistry'),
@@ -28,13 +27,7 @@ module.exports.validateEnvironment = function(command) {
       shortSha = payload['short_sha'],
       sha = validateParameter(payload, 'sha'),
       head = validateParameter(payload, 'head');
-  
-    const isProduction = /^prod.*/.test(environmentName),
-      deploymentEnvironment = isProduction
-        ? `${environmentName}-${cloudProvider}`
-        : `${environmentName}-${cloudProvider}`
-        // : `${environmentName}-${head}-${cloudProvider}`
-        ;
+      
   
     // A deployment payload for passing information of the components for the deployment
     const deploymentPayload = {
@@ -47,7 +40,6 @@ module.exports.validateEnvironment = function(command) {
       short_sha: shortSha,
       environment: deploymentEnvironment,
       ref: context.ref,
-      cloud_provider: cloudProvider,
       environment_name: environmentName,
       repository_name: context.repo.repo,
       repo: context.repo,
