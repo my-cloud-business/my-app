@@ -18,6 +18,7 @@ module.exports = class DeploymentLabel {
   
       const label = context.payload.label.name.toLowerCase();
       const containers = await this.getContainerStatuses();
+
   
       if (!containers || containers.length === 0) {
         await this.postNoContainerStatus();
@@ -25,6 +26,8 @@ module.exports = class DeploymentLabel {
         // Extract the containers, post a message to the user acknowledging the request and provide outputs for action steps
         await this.postDeploymentComment(label, containers)
   
+        console.log("saw containers: " + JSON.stringify(containers));
+
         // Expose the container details
         containers.forEach(container => {
           core.setOutput(`${container.type}_container_image`, container.image);
@@ -56,6 +59,8 @@ module.exports = class DeploymentLabel {
           const statusToMatch = [
             'Update container status'
           ];
+
+          console.log(JSON.stringify(status));
       
           return status.data.statuses.filter(status => {
             return statusToMatch.indexOf(status.context) > -1 && status.state === 'success';
