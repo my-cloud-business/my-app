@@ -57,7 +57,7 @@ jobs:
           app_container_image: ${{ steps.acknowledge_label.outputs.container_image }}
           app_container_version: ${{ steps.acknowledge_label.outputs.container_version }}
         with:
-          github-token: ${{ steps.temp_token.outputs.token }}
+          github-token: ${{ secrets.REPOPACKAGES_PAT }} # ${{ steps.temp_token.outputs.token }}
           script: |
             const scriptPath = require('path').resolve('./.github/workflows/scripts/create_deployment.js');
             const utils = require(scriptPath);
@@ -82,6 +82,7 @@ jobs:
         if: failure()
         uses: actions/github-script@v3
         with:
+          github-token: ${{ secrets.REPOPACKAGES_PAT }} # ${{ steps.temp_token.outputs.token }}
           script: |
             const commentBody = `Failure in _${context.payload.label.name.toLowerCase()}_, for more details see https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
 
