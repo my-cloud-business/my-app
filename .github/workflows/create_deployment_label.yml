@@ -30,6 +30,8 @@ jobs:
             const scriptPath = require('path').resolve('./.github/workflows/scripts/deploymentLabel.js');
             const DeploymentLabel = require(scriptPath);
 
+            console.log("starting to understand deploy labels")
+
             const deploymentLabel = new DeploymentLabel(context, core, github);
             await deploymentLabel.acknowledgeDeployLabel();
 

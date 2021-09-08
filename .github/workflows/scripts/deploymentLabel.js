@@ -19,8 +19,10 @@ module.exports = class DeploymentLabel {
       const label = context.payload.label.name.toLowerCase();
       const containers = await this.getContainerStatuses();
 
-  
+      console.log("saw status, containers: " + JSON.stringify(containers));
+
       if (!containers || containers.length === 0) {
+        console.log("saw no containers");
         await this.postNoContainerStatus();
       } else if (containers.length === 2) {
         // Extract the containers, post a message to the user acknowledging the request and provide outputs for action steps
