@@ -147,3 +147,4 @@ jobs:
           state: success
           context: Container Image Published - App
           description: ${{ steps.maven_build.outputs.container_image_name }}:${{ steps.maven_build.outputs.container_version }}
+          owner: ${{ github.actor }}
