@@ -86,6 +86,8 @@ jobs:
           application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
           organization: ${{ env.OWNER_LC }}
 
+      - name: Write token
+        run: echo ${{ steps.get_workflow_token.outputs.token }}
 
       - name: Build Test and Package
         id: maven_build
