@@ -138,13 +138,19 @@ jobs:
             MAIN_CLASS=${{ steps.maven_build.outputs.build_main_class  }}
             MAIN_JAR_TYPE=${{ steps.maven_build.outputs.build_output_type  }}
       
-      - name: Publish Container as a Status
-        id: container_image_status
-        if: matrix.os == 'ubuntu-latest'
-        uses: Sibz/github-status-action@v1
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          state: success
-          context: Container Image Published - App
+      - uses: ouzi-dev/commit-status-updater@v1.1.0
+        with: 
+          name: Update container status
+          status: success
           description: ${{ steps.maven_build.outputs.container_image_name }}:${{ steps.maven_build.outputs.container_version }}
-          owner: ${{ github.actor }}
+
+      # - name: Publish Container as a Status
+      #   id: container_image_status
+      #   if: matrix.os == 'ubuntu-latest'
+      #   uses: Sibz/github-status-action@v1
+      #   with:
+      #     authToken: ${{ secrets.GITHUB_TOKEN }}
+      #     state: success
+      #     context: Container Image Published - App
+      #     description: ${{ steps.maven_build.outputs.container_image_name }}:${{ steps.maven_build.outputs.container_version }}
+      #     owner: ${{ github.actor }}
