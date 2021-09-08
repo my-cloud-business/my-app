@@ -21,9 +21,8 @@ jobs:
 
       app_container_image: ${{ steps.deployment_data.outputs.app_container_image }}
       app_container_version: ${{ steps.deployment_data.outputs.app_container_version }}
-      
-      environment_short_name: ${{ steps.deployment_data.outputs.environment_name }}
-      environment_name: ${{ steps.deployment_data.outputs.environment }}
+            
+      environment_name: ${{ steps.deployment_data.outputs.environment_name }}
 
       deployment_sha: ${{ steps.deployment_data.outputs.deployment_sha }}
       deployment_github_ref: ${{ steps.deployment_data.outputs.deployment_github_ref }}

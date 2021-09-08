@@ -19,8 +19,7 @@ class DeploymentPayload {
     
         deployment_sha: deploymentPayload.sha,
         deployment_github_ref: deploymentPayload.ref,
-  
-        environment: deploymentPayload.environment,
+          
         environment_name: deploymentPayload.environment_name,
     
         container_registry: deploymentPayload.container_registry,
