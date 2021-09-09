@@ -59,14 +59,13 @@ jobs:
             if (containers.length > 0) {
               core.setOutput('containers', JSON.stringify(containers));
               console.log(`Containers found: ${JSON.stringify(containers)}`);
-            } else {
-              core.setFailed(`No container images associated with commit`);
-            }
+            } 
 
 
   container_scan:
     name: Container Image Scan
     runs-on: ubuntu-latest
+    if: needs.get_containers.outputs.containers
 
     needs:
       - get_containers
