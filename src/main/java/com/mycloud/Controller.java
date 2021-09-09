@@ -10,7 +10,7 @@ public class Controller {
 	@GetMapping("/")
 	public String index() {
         Widget w = new Widget();
-		return "Greetings from Spring Boot: " + w.isEnabled();
+		return "Greetings: " + w.isEnabled();
 	}
 
 }
