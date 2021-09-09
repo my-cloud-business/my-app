@@ -12,3 +12,4 @@ USER java:java
 COPY ./target/$MAIN_JAR.$MAIN_JAR_TYPE main.jar
 
 CMD ["main.jar"]
+
