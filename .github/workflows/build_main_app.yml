@@ -78,8 +78,17 @@ jobs:
             mvn-${{ matrix.java }}
             mvn-
 
+      - uses: jnwng/github-app-installation-token-action@v1
+        id: installation_token
+        with: 
+          appId: ${{ secrets.APPLICATION_ID }}
+          installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
+          privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
       - name: Build Test and Package
         id: maven_build
+        env:
+          GITHUB_TOKEN: ${{ steps.installation_token.outputs.token }}
         run: |
           mvn package -B \
             -Dsha1="${{ needs.build_parameters.outputs.maven_sha1 }}" \
