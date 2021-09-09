@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:11-alphine
 ARG MAIN_JAR
 ARG MAIN_CLASS
 ARG MAIN_JAR_TYPE
