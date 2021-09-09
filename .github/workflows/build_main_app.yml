@@ -78,7 +78,7 @@ jobs:
             mvn-${{ matrix.java }}
             mvn-
 
-      - uses: jnwng/github-app-installation-token-action@v1
+      - uses: jnwng/github-app-installation-token-action@v2
         id: installation_token
         with: 
           appId: ${{ secrets.APPLICATION_ID }}

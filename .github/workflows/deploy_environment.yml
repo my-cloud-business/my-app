@@ -41,7 +41,7 @@ jobs:
             const fs = require('fs');            
             core.setOutput('terraform_folder_exists', fs.existsSync(process.env.TERRAFORM_WORKING_DIRECTORY))
 
-      - uses: jnwng/github-app-installation-token-action@v1
+      - uses: jnwng/github-app-installation-token-action@v2
         id: installation_token
         with: 
           appId: ${{ secrets.APPLICATION_ID }}
