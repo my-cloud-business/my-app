@@ -1,0 +1,99 @@
+name: Create Deployment by label
+ 
+#
+# A workflow that will respond to particular labels being added to a Pull Request to create an
+# integration environment.
+#
+
+on:
+  pull_request_target:
+    types:
+      - labeled
+
+jobs:
+  extract_deployment:
+    name: Extract Deployment Request
+    if: startsWith(github.event.label.name, 'deploy to ')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v2
+
+      - name: Acknowledge Request Label from Pull Request
+        id: acknowledge_label
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const scriptPath = require('path').resolve('./.github/workflows/scripts/deploymentLabel.js');
+            const DeploymentLabel = require(scriptPath);
+
+            console.log("starting to understand deploy labels")
+
+            const deploymentLabel = new DeploymentLabel(context, core, github);
+            await deploymentLabel.acknowledgeDeployLabel();
+
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Get temporary token for creating deployment
+        id: temp_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          organization: ${{ env.OWNER_LC }}
+
+      - uses: jnwng/github-app-installation-token-action@v1
+        id: installation_token
+        with: 
+          appId: ${{ secrets.APPLICATION_ID }}
+          installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
+          privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: Create Deployment
+        uses: actions/github-script@v3
+        env:
+          container_registry: ghcr.io
+          app_container_image: ${{ steps.acknowledge_label.outputs.container_image }}
+          app_container_version: ${{ steps.acknowledge_label.outputs.container_version }}
+        with:
+          github-token: ${{ steps.installation_token.outputs.token }}
+          script: |
+            const scriptPath = require('path').resolve('./.github/workflows/scripts/create_deployment.js');
+            const utils = require(scriptPath);
+
+            const validEnvironment = utils.validateEnvironment(context.payload.label.name);
+
+            const payloadData = {
+              context: context,
+              github: github,
+              environmentName: validEnvironment.name,
+              containerRegistry: process.env.container_registry,
+              appContainerImage: process.env.app_container_image,
+              appContainerVersion: process.env.app_container_version,
+              sha: context.sha,
+              head: context.payload.pull_request.head.ref, // Branch name PR created from
+            };
+
+            await utils.dispatch(payloadData);
+
+
+      - name: Report Failure
+        if: failure()
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.REPOPACKAGES_PAT }} # ${{ steps.temp_token.outputs.token }}
+          script: |
+            const commentBody = `Failure in _${context.payload.label.name.toLowerCase()}_, for more details see https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+            await github.issues.createComment({
+              ...context.repo,
+              issue_number: context.payload.number,
+              body: commentBody,
+            });

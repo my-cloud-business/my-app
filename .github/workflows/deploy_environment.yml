@@ -1,0 +1,157 @@
+name: Deploy Environment
+ 
+on:
+  repository_dispatch:
+    types:
+      - deployment_request
+
+env:
+      # Directory that contains Terraform HCL to run
+      TERRAFORM_WORKING_DIRECTORY: ./terraform/src
+
+jobs:
+  deploy_details:
+    name: Define Deployment Details
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      container_registry: ${{ steps.deployment_data.outputs.container_registry }}
+      namespace: ${{ steps.deployment_data.outputs.namespace }}
+
+      app_container_image: ${{ steps.deployment_data.outputs.app_container_image }}
+      app_container_version: ${{ steps.deployment_data.outputs.app_container_version }}
+            
+      environment_name: ${{ steps.deployment_data.outputs.environment_name }}
+
+      deployment_sha: ${{ steps.deployment_data.outputs.deployment_sha }}
+      deployment_github_ref: ${{ steps.deployment_data.outputs.deployment_github_ref }}
+
+      deploy_using_terraform: ${{ steps.deploy_tf_approach.outputs.terraform_folder_exists }}
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v2
+
+      - name: Check for Terraform folder
+        id: deploy_tf_approach
+        uses: actions/github-script@v3
+        with: 
+          script: |
+            const fs = require('fs');            
+            core.setOutput('terraform_folder_exists', fs.existsSync(process.env.TERRAFORM_WORKING_DIRECTORY))
+
+      - uses: jnwng/github-app-installation-token-action@v1
+        id: installation_token
+        with: 
+          appId: ${{ secrets.APPLICATION_ID }}
+          installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
+          privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: Extract Deployment Details and Report Deployment in Progress
+        id: deployment_data
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ steps.installation_token.outputs.token }}
+          script: |
+            const scriptPath = require('path').resolve('./.github/workflows/scripts/unpack_deployment_payload.js')
+              , deploymentPayload = require(scriptPath);
+            ;
+            const deploymentUtils = deploymentPayload(context, core, github)
+            deploymentUtils.extractDeploymentDetails();
+
+  deploy_using_terraform:
+    name: Deploy using Terraform
+    runs-on: ubuntu-latest
+    if: ${{ needs.deploy_details.outputs.deploy_using_terraform}}
+
+    needs:
+      - deploy_details      
+
+    timeout-minutes: 30
+
+    environment:
+      name: ${{ needs.deploy_details.outputs.environment_name }}
+      url: ${{ steps.clean_environment_url.outputs.url }}
+
+    
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v2
+
+      - name: test
+        run: echo test
+
+      # - name: HashiCorp - Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1.3.2
+      #   with:
+      #     terraform_version: 0.14.7
+      #     terraform_wrapper: true
+
+
+      # - name: Configure kubectl for Azure Kubernetes Services
+      #   if: needs.deploy_details.outputs.cloud_provider == 'azure'
+      #   uses: Azure/aks-set-context@v1
+      #   with:
+      #     creds: ${{ secrets.AKS_SVC_PRINCIPAL}}
+      #     cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+      #     resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+
+      # - name: Generate and Inject Terraform Parameters
+      #   id: terraform_environment_variables
+      #   uses: actions/github-script@v3
+      #   env:
+      #     config: ${{ toJSON(needs.deploy_details.outputs) }}
+
+      #     # All of the relevant cloud specific parameters required to connect, only one set will get used in practice
+
+      #     azure_storage_account_resource_group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+      #     azure_storage_account_name: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+      #     arm_access_key: ${{ secrets.ARM_ACCESS_KEY }}
+      #   with:
+      #     script: |
+      #       const scriptPath = require('path').resolve(`./.github/workflows/scripts/cloud_parameters.js`)
+      #         , cloudUtils = require(scriptPath);
+      #       ;
+      #       cloudUtils.create(context, core, github).exportTerraformParameters(JSON.parse(process.env.config));
+
+      # - name: Terraform - init
+      #   working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
+      #   run: terragrunt init
+
+      # - name: Terraform - validate
+      #   working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
+      #   run: terragrunt validate
+
+      # - name: Terraform - plan
+      #   working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
+      #   run: terragrunt plan
+
+      # - name: Terraform - apply
+      #   working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
+      #   run: terragrunt apply -auto-approve
+
+      # - name: Get Website URL from Terrafom State
+      #   id: terraform_output
+      #   working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
+      #   run: terraform output -json website_url
+
+      # - name: Extract environment URL
+      #   id: clean_environment_url
+      #   uses: actions/github-script@v3
+      #   env:
+      #     terraform_url: ${{ steps.terraform_output.outputs.stdout }}
+      #   with:
+      #     script: |
+      #       // Terraform has started putting out quoted strings now, so we have to clean them up
+
+      #       const data = process.env.terraform_url;
+      #       let result = data.trim();
+
+      #       const regex = /^"(.*)"$/;
+      #       if (regex.test(result)) {
+      #         result = regex.exec(result)[1]
+      #       }
+
+      #       core.setOutput('url', result);
