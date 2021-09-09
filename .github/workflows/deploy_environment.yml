@@ -41,12 +41,18 @@ jobs:
             const fs = require('fs');            
             core.setOutput('terraform_folder_exists', fs.existsSync(process.env.TERRAFORM_WORKING_DIRECTORY))
 
+      - uses: jnwng/github-app-installation-token-action@v1
+        id: installation_token
+        with: 
+          appId: ${{ secrets.APPLICATION_PRIVATE_ID }}
+          installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
+          privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
       - name: Extract Deployment Details and Report Deployment in Progress
         id: deployment_data
         uses: actions/github-script@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.installation_token.outputs.token }}
           script: |
             const scriptPath = require('path').resolve('./.github/workflows/scripts/unpack_deployment_payload.js')
               , deploymentPayload = require(scriptPath);
