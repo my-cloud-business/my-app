@@ -49,6 +49,12 @@ jobs:
           application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
           organization: ${{ env.OWNER_LC }}
 
+      - uses: jnwng/github-app-installation-token-action@v1
+        id: installation_token
+        with: 
+          appId: ${{ secrets.APPLICATION_PRIVATE_ID }}
+          installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
+          privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
       - name: Create Deployment
         uses: actions/github-script@v3
@@ -57,7 +63,7 @@ jobs:
           app_container_image: ${{ steps.acknowledge_label.outputs.container_image }}
           app_container_version: ${{ steps.acknowledge_label.outputs.container_version }}
         with:
-          github-token: ${{ secrets.REPOPACKAGES_PAT }} # ${{ steps.temp_token.outputs.token }}
+          github-token: ${{ steps.installation_token.outputs.token }}
           script: |
             const scriptPath = require('path').resolve('./.github/workflows/scripts/create_deployment.js');
             const utils = require(scriptPath);
