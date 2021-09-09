@@ -41,14 +41,6 @@ jobs:
         env:
           OWNER: '${{ github.repository_owner }}'
 
-      - name: Get temporary token for creating deployment
-        id: temp_token
-        uses: peter-murray/workflow-application-token-action@v1
-        with:
-          application_id: ${{ secrets.APPLICATION_ID }}
-          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          organization: ${{ env.OWNER_LC }}
-
       - uses: jnwng/github-app-installation-token-action@v1
         id: installation_token
         with: 

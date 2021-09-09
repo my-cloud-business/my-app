@@ -78,21 +78,17 @@ jobs:
             mvn-${{ matrix.java }}
             mvn-
 
-      - name: Get Token
-        id: get_workflow_token
-        uses: peter-murray/workflow-application-token-action@v1
-        with:
-          application_id: ${{ secrets.APPLICATION_ID }}
-          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-          organization: ${{ env.OWNER_LC }}
-
-      - name: Write token
-        run: echo ${{ steps.get_workflow_token.outputs.token }}
+      - uses: jnwng/github-app-installation-token-action@v1
+        id: installation_token
+        with: 
+          appId: ${{ secrets.APPLICATION_ID }}
+          installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
+          privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
       - name: Build Test and Package
         id: maven_build
         env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_PAT }} # ${{ steps.get_workflow_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.installation_token.outputs.token }}
         run: |
           mvn package -B \
             -Dsha1="${{ needs.build_parameters.outputs.maven_sha1 }}" \
@@ -104,7 +100,7 @@ jobs:
         id: maven_deploy_snapshot
         if: matrix.os == 'ubuntu-latest'
         env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_PAT }} # ${{ steps.get_workflow_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.installation_token.outputs.token }}
         run: |
           mvn deploy -B \
             -Dsha1="${{ needs.build_parameters.outputs.maven_sha1 }}" \
