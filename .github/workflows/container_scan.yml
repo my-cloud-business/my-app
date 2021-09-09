@@ -26,7 +26,7 @@ jobs:
 
       - name: Get Container Images from Commit Status
         id: container_images
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.1
         with:
           script: |
             console.log("context.sha = " + context.sha)
