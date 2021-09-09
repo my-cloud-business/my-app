@@ -138,7 +138,7 @@ jobs:
             MAIN_CLASS=${{ steps.maven_build.outputs.build_main_class  }}
             MAIN_JAR_TYPE=${{ steps.maven_build.outputs.build_output_type  }}
       
-      - uses: ouzi-dev/commit-status-updater@v1.1.0
+      - uses: ouzi-dev/commit-status-updater@v1.1.2
         with: 
           name: Update container status
           status: success
