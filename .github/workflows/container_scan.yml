@@ -96,7 +96,7 @@ jobs:
           docker pull ghcr.io/${{ env.OWNER_LC }}/${{ matrix.container }}
 
       - name: Scan Container Image
-        uses: anchore/scan-action@v2
+        uses: anchore/scan-action@v3
         with:
           image: ghcr.io/${{ env.OWNER_LC }}/${{ matrix.container }}
           debug: true
