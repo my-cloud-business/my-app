@@ -44,7 +44,7 @@ jobs:
       - uses: jnwng/github-app-installation-token-action@v1
         id: installation_token
         with: 
-          appId: ${{ secrets.APPLICATION_PRIVATE_ID }}
+          appId: ${{ secrets.APPLICATION_ID }}
           installationId: ${{ secrets.APPLICATION_INSTALLATION_ID }}
           privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
