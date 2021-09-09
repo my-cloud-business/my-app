@@ -35,7 +35,7 @@ jobs:
 
       - name: Check for Terraform folder
         id: deploy_tf_approach
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.1
         with: 
           script: |
             const fs = require('fs');            
@@ -50,7 +50,7 @@ jobs:
 
       - name: Extract Deployment Details and Report Deployment in Progress
         id: deployment_data
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.1
         with:
           github-token: ${{ steps.installation_token.outputs.token }}
           script: |
@@ -100,7 +100,7 @@ jobs:
 
       # - name: Generate and Inject Terraform Parameters
       #   id: terraform_environment_variables
-      #   uses: actions/github-script@v3
+      #   uses: actions/github-script@v4.1
       #   env:
       #     config: ${{ toJSON(needs.deploy_details.outputs) }}
 
@@ -139,7 +139,7 @@ jobs:
 
       # - name: Extract environment URL
       #   id: clean_environment_url
-      #   uses: actions/github-script@v3
+      #   uses: actions/github-script@v4.1
       #   env:
       #     terraform_url: ${{ steps.terraform_output.outputs.stdout }}
       #   with:

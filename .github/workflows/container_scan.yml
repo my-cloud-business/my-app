@@ -26,7 +26,7 @@ jobs:
 
       - name: Get Container Images from Commit Status
         id: container_images
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.1
         with:
           script: |
             console.log("context.sha = " + context.sha)
@@ -95,7 +95,7 @@ jobs:
           docker pull ghcr.io/${{ env.OWNER_LC }}/${{ matrix.container }}
 
       - name: Scan Container Image
-        uses: anchore/scan-action@v2
+        uses: anchore/scan-action@v3
         with:
           image: ghcr.io/${{ env.OWNER_LC }}/${{ matrix.container }}
           debug: true
