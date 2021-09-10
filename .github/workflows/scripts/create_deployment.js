@@ -47,13 +47,21 @@ module.exports.validateEnvironment = function(command) {
     console.log('Deployment Request Payload:');
     console.log(JSON.stringify(deploymentPayload, null, 2));
   
-    await github.repos.createDispatchEvent({
-      ...context.repo,
-      event_type: 'deployment_request',
-      client_payload: deploymentPayload
+    await github.repos.createDeployment({  
+      environment: environmentName,
+      owner: context.actor,
+      repo: context.repo,
+      ref: context.ref,
+      payload: deploymentPayload,
+      description: "deploying to environment " + environmentName
     });
   }
   
+  // await github.repos.createDispatchEvent({  
+  //   ...context.repo,
+  //   event_type: 'deployment_request',
+  //   client_payload: deploymentPayload
+  // });
   
   function validateParameter(payload, name) {
     const value = payload[name];

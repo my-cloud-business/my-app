@@ -1,9 +1,11 @@
 name: Deploy Environment
  
 on:
-  repository_dispatch:
-    types:
-      - deployment_request
+  deployment:
+  # repository_dispatch:
+  #   types:
+  #     - deployment_request
+    
 
 env:
       # Directory that contains Terraform HCL to run
