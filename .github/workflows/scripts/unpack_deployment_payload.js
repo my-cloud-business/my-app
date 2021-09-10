@@ -10,8 +10,12 @@ class DeploymentPayload {
     async extractDeploymentDetails() {
       const context = this.context
         , core = this.core
-        , deploymentPayload = context.payload.client_payload
+        , deploymentPayload = context.payload.payload
         ;
+  
+      console.log("context = " + JSON.stringify(context));
+      console.log("core = " + JSON.stringify(core));
+      console.log("github = " + JSON.stringify(github));
   
       const deployment = {
         app_container_image: deploymentPayload.app_container.image,
