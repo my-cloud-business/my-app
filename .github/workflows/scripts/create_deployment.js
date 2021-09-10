@@ -48,10 +48,10 @@ module.exports.validateEnvironment = function(command) {
     console.log(JSON.stringify(deploymentPayload, null, 2));
   
     await github.repos.createDeployment({  
+      repo: context.repo.owner,
+      repo: context.repo.repo,
       environment: environmentName,
-      owner: context.actor,
-      repo: context.repo,
-      ref: context.ref,
+      ref: sha,
       payload: deploymentPayload,
       description: "deploying to environment " + environmentName
     });
