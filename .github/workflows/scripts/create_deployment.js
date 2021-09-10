@@ -51,6 +51,7 @@ module.exports.validateEnvironment = function(command) {
       owner: context.repo.owner,
       repo: context.repo.repo,
       environment: environmentName,
+      required_contexts: ["Perform CodeQL Scanning"],
       ref: sha,
       payload: deploymentPayload,
       description: "deploying to environment " + environmentName
