@@ -15,7 +15,7 @@ class DeploymentPayload {
   
       console.log("context = " + JSON.stringify(context));
       console.log("core = " + JSON.stringify(core));
-      console.log("github = " + JSON.stringify(github));
+      console.log("github = " + JSON.stringify(this.github));
   
       const deployment = {
         app_container_image: deploymentPayload.app_container.image,
