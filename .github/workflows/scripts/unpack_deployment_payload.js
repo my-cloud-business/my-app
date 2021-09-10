@@ -10,7 +10,7 @@ class DeploymentPayload {
     async extractDeploymentDetails() {
       const context = this.context
         , core = this.core
-        , deploymentPayload = context.payload.payload
+        , deploymentPayload = context.payload.deployment.payload
         ;
   
       console.log("context = " + JSON.stringify(context));
