@@ -80,6 +80,7 @@ jobs:
       
       - name: start deployment
         uses: bobheadxi/deployments@v0.6.0
+        id: deployment
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -88,13 +89,14 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v1
 
-      - name: finish deployment
-        uses: bobheadxi/deployments@v0.6.0
+      - name: update deployment status
+        uses: bobheadxi/deployments@v0.4.3
+        if: always()
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: ${{  needs.deploy_details.outputs.environment_name }}
-          ref: ${{  needs.deploy_details.outputs.deployment_github_ref }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
       # - name: Terraform Init
       #   id: init
