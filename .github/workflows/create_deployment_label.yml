@@ -55,7 +55,7 @@ jobs:
           app_container_image: ${{ steps.acknowledge_label.outputs.container_image }}
           app_container_version: ${{ steps.acknowledge_label.outputs.container_version }}
         with:
-          github-token: ${{ steps.installation_toksen.outputs.token }}
+          github-token: ${{ steps.installation_token.outputs.token }}
           script: |
             const scriptPath = require('path').resolve('./.github/workflows/scripts/create_deployment.js');
             const utils = require(scriptPath);
