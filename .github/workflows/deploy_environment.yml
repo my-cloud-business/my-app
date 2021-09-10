@@ -85,7 +85,7 @@ jobs:
           step: start 
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{  needs.deploy_details.outputs.environment_name }}
-          ref: ${{  needs.deploy_details.outputs.deployment_github_ref }}
+          ref: ${{ github.head_ref }}
 
       - uses: hashicorp/setup-terraform@v1
 
