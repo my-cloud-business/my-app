@@ -82,7 +82,7 @@ jobs:
         uses: bobheadxi/deployments@v0.6.0
         id: deployment
         with:
-          step: start
+          step: start 
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{  needs.deploy_details.outputs.environment_name }}
           ref: ${{  needs.deploy_details.outputs.deployment_github_ref }}
