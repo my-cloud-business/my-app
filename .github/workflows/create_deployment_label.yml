@@ -23,7 +23,7 @@ jobs:
 
       - name: Acknowledge Request Label from Pull Request
         id: acknowledge_label
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -49,7 +49,7 @@ jobs:
           privateKey: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
       - name: Create Deployment
-        uses: actions/github-script@v4.1
+        uses: actions/github-script@v5
         env:
           container_registry: ghcr.io
           app_container_image: ${{ steps.acknowledge_label.outputs.container_image }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: Report Failure
         if: failure()
-        uses: actions/github-script@v4.1
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.REPOPACKAGES_PAT }} # ${{ steps.temp_token.outputs.token }}
           script: |
