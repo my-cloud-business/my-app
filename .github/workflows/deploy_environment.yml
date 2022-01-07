@@ -33,7 +33,7 @@ jobs:
 
       - name: Check for Terraform folder
         id: deploy_tf_approach
-        uses: actions/github-script@v4.1
+        uses: actions/github-script@v5.1.0
         with: 
           script: |
             const fs = require('fs');            
@@ -48,7 +48,7 @@ jobs:
 
       - name: Extract Deployment Details and Report Deployment in Progress
         id: deployment_data
-        uses: actions/github-script@v4.1
+        uses: actions/github-script@v5.1.0
         with:
           github-token: ${{ steps.installation_token.outputs.token }}
           script: |
@@ -115,7 +115,7 @@ jobs:
       #   id: plan
       #   run: terraform plan -no-color
       
-      # - uses: actions/github-script@v4.1
+      # - uses: actions/github-script@v5.1.0
       #   if: github.event_name == 'pull_request'
       #   env: 
       #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
